@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,28 +19,48 @@ namespace ExpenseIt
     /// <summary>
     /// Interaction logic for ExpenseItHome.xaml
     /// </summary>
-    public partial class ExpenseItHome : Window
+    public partial class ExpenseItHome : Window, INotifyPropertyChanged
     {
+        private DateTime lastChecked;
+
         public ExpenseItHome()
         {
             InitializeComponent();
-            ListBoxItem james = new ListBoxItem();
-            james.Content = "James";
-            peopleListBox.Items.Add(james);
-            ListBoxItem david = new ListBoxItem();
-            david.Content = "David";
-            peopleListBox.Items.Add(david);
-            ListBoxItem lisa = new ListBoxItem();
-            lisa.Content = "Lisa";
-            peopleListBox.Items.Add(lisa);
-
-
+            LastChecked = DateTime.Now;
+            DataContext = this;
+            PersonsChecked = new ObservableCollection<string>();
         }
 
-        private void ViewExpenseReportButton(object sender, RoutedEventArgs e)
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string greetingMsg = peopleListBox.SelectedItem.ToString();
-            MessageBox.Show("Hi " + greetingMsg);
+            ExpenseReport expenseReport = new ExpenseReport(this.peopleListBox.SelectedItem)
+            {
+                Height = this.Height,
+                Width = this.Width
+            };
+            expenseReport.ShowDialog();
+            Close();
         }
+
+        private void peopleListBox_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            LastChecked = DateTime.Now;
+            PersonsChecked.Add((peopleListBox.SelectedItem as System.Xml.XmlElement).Attributes["Name"].Value);
+        }
+
+
+        public DateTime LastChecked
+        {
+            get { return lastChecked; }
+            set
+            {
+                lastChecked = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LastChecked"));
+            }
+        }
+
+        public ObservableCollection<string> PersonsChecked { get; set; }
     }
 }

@@ -23,5 +23,9 @@ namespace ExpenseIt
         {
             InitializeComponent();
         }
+        public ExpenseReport(object data) : this()
+        {
+            DataContext = data;
+        }
     }
 }

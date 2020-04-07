@@ -5,31 +5,114 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ExpenseIt"
         mc:Ignorable="d"
-        Title="ExpenseIt - Home" Height="450" Width="800">
+        Title="ExpenseIt - Home"
+        Height="450"
+        Width="800">
     <Grid Margin="10,0,10,10">
+        <Grid.Resources>
+            <XmlDataProvider x:Key="ExpenseDataSource"
+                             XPath="Expenses">
+                <x:XData>
+                    <Expenses xmlns="">
+                        <Person Name="Mike"
+                                Department="Legal">
+                            <Expense ExpenseType="Lunch"
+                                     ExpenseAmount="50" />
+                            <Expense ExpenseType="Transportation"
+                                     ExpenseAmount="50" />
+                        </Person>
+                        <Person Name="Lisa"
+                                Department="Marketing">
+                            <Expense ExpenseType="Document printing"
+                                     ExpenseAmount="50" />
+                            <Expense ExpenseType="Gift"
+                                     ExpenseAmount="125" />
+                        </Person>
+                        <Person Name="John"
+                                Department="Engineering">
+                            <Expense ExpenseType="Magazine subscription"
+                                     ExpenseAmount="50" />
+                            <Expense ExpenseType="New machine"
+                                     ExpenseAmount="600" />
+                            <Expense ExpenseType="Software"
+                                     ExpenseAmount="500" />
+                        </Person>
+                        <Person Name="Mary"
+                                Department="Finance">
+                            <Expense ExpenseType="Dinner"
+                                     ExpenseAmount="100" />
+                        </Person>
+                        <Person Name="Theo"
+                                Department="Marketing">
+                            <Expense ExpenseType="Dinner"
+                                     ExpenseAmount="100" />
+                        </Person>
+                        <Person Name="James"
+                                Department="Reestourant">
+                            <Expense ExpenseType="lunch"
+                                     ExpenseAmount="50" />
+                        </Person>
+                        <Person Name="David"
+                                Department="Mall">
+                            <Expense ExpenseType="clothes"
+                                     ExpenseAmount="120" />
+                        </Person>
+                    </Expenses>
+                </x:XData>
+            </XmlDataProvider>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition />
-            <ColumnDefinition Width="230" />
+            <ColumnDefinition Width="300" />
         </Grid.ColumnDefinitions>
         <Grid.Background>
-            <ImageBrush ImageSource="watermark.png"/>
+            <ImageBrush ImageSource="watermark.png" />
         </Grid.Background>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition />
-
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <!-- People list -->
-        <Label Grid.Column="1" Grid.Row="1">View Expense Report</Label>
-        <Border Grid.Row="1"  Height="35" Padding="5" Background="#4E87D4" Grid.ColumnSpan="2" Margin="545,129,0.2,94" Grid.RowSpan="2">
+        <Label Grid.Column="1">View Expense Report</Label>
+        <Border Grid.Column="1"
+                Grid.Row="1"
+                Height="35"
+                Margin="0,140,0,0"
+                Padding="5"
+                Background="#4E87D4">
             <Label Foreground="White">Names</Label>
         </Border>
-        <ListBox Grid.Row="2" Name="peopleListBox" Grid.ColumnSpan="2" Margin="545,34.8,0.2,0">
-            <ListBoxItem x:Name="peopleListBox1">Mike</ListBoxItem>
+        <ListBox Name="peopleListBox"
+                 SelectionChanged="peopleListBox_SelectionChanged_1"
+                 Grid.Column="1"
+                 Grid.Row="2"
+                 ItemsSource="{Binding Source={StaticResource ExpenseDataSource}, XPath=Person}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Label Content="{Binding XPath=@Name}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
-        <!-- View report button -->
-        <Button Grid.Row="3" Width="125" Height="25" HorizontalAlignment="Right" Margin="0,0,0.2,103.8" Grid.Column="1" Click="ViewExpenseReportButt">View</Button>
+        <Label Grid.Column="0"
+               Grid.Row="1"
+               HorizontalContentAlignment="Left"
+               VerticalContentAlignment="Bottom"
+               FontSize="16"
+               FontFamily="Segoe UI Black">Last Previewed:</Label>
+        <ListBox Grid.Column="0"
+                 Grid.Row="2"
+                 ItemsSource="{Binding Path=PersonsChecked}"></ListBox>
+        <Button Margin="0,10,0,0"
+                Grid.Column="1"
+                Grid.Row="3"
+                Width="125"
+                Height="25"
+                HorizontalAlignment="Right"
+                Click="Button_Click"
+                Content="{Binding ElementName=peopleListBox, Path=SelectedItem.Attributes[Name]}" />
+        <Label Grid.Column="0"
+               Grid.Row="3"
+               Content="{Binding Path=LastChecked}" />
     </Grid>
 </Window>
